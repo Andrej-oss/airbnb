@@ -3,3 +3,5 @@ export {default as Banner} from './Banner';
 export {default as SmallCard} from './SmallCard';
 export {default as MediumCard} from './MediumCard';
 export {default as Footer} from './Footer';
+export {default as InfoCard} from './InfoCard';
+export {default as Map} from './Map';

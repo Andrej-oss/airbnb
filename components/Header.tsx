@@ -1,16 +1,19 @@
-import { GlobeAltIcon, MenuIcon, SearchIcon, UserCircleIcon, UserIcon, UsersIcon } from "@heroicons/react/solid";
+import { GlobeAltIcon, MenuIcon, SearchIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/solid";
 import Image from "next/image";
-import { useState } from "react";
-import { DateRangePicker, Range } from "react-date-range";
+import { useRouter } from "next/router";
+import { ComponentProps, useState } from "react";
+import { DateRangePicker} from "react-date-range";
 
-import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const Header = () => {
+const Header = (props: ComponentProps<any>) => {
+  const { placeholder } = props;
   const [searchInput, setSearchInput] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [numberOfGuests, setNumberOfGuests] = useState(0);
+  const [numberOfGuests, setNumberOfGuests] = useState(1);
+  const router = useRouter();
   const selectionRange = {
     startDate: startDate,
     endDate: endDate,
@@ -22,11 +25,24 @@ const Header = () => {
     setEndDate(ranges.selection.endDate);
   }
 
+  const search = () => {
+    return router.push({
+      pathname: '/search',
+      query: {
+        location: searchInput,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        numberOfGuests: numberOfGuests
+      }
+    })
+  }
+
   return (
       <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md py-5 px-5 md:px-10">
         {/*  left */}
 
-        <div className="relative flex items-center h-10 cursor-pointer my-auto">
+        <div onClick={() => router.push('/')}
+             className="relative flex items-center h-10 cursor-pointer my-auto">
           <Image
               src="https://links.papareact.com/qd3"
               layout="fill"
@@ -35,7 +51,7 @@ const Header = () => {
           />
         </div>
         <div className='flex items-center md:border-2 rounded-full py-2 md:shadow-lg'>
-          <input type="text" placeholder="start your search"
+          <input type="text" placeholder={placeholder || "start your search"}
                  value={searchInput}
                  onChange={(e) => setSearchInput(e.target.value)}
                  className="pl-5 flex-grow bg-transparent outline-none text-sm placeholder-gray-400 text-gray-600"/>
@@ -71,8 +87,10 @@ const Header = () => {
               <div className='flex flex-grow'>
                 <button
                     onClick={() => setSearchInput('')}
-                    className='flex-grow text-gray-500'>Cencel</button>
-                <button className='flex-grow text-red-400'>Search</button>
+                    className='flex-grow text-gray-500'>Cancel</button>
+                <button
+                    onClick={search}
+                    className='flex-grow text-red-400'>Search</button>
               </div>
             </div>
         )}
